@@ -77,19 +77,22 @@ model Marine {
   lastUpdated  DateTime  @default(now())
   createdAt    DateTime  @default(now())
 
-  Vessel       Vessel    @relation(fields: [vesselId], references: [id])
+  // Vessel       Vessel    @relation(fields: [vesselId], references: [id])
 }
 
 // Vessel Module
 model Vessel {
-  id           Int       @id @default(autoincrement())
-  name         String    @db.VarChar(255)
-  type         String
+  id           Int      @id @default(autoincrement())
+  name         String   @db.VarChar(255)
+  type         String   @db.VarChar(255)
   capacity     Int
-  operationalStatus String @default("active")
-  marineData   Marine?
-  createdAt    DateTime  @default(now())
+  location     String?  @db.VarChar(255) // Lokasi terkini kapal
+  status       String   @default("active")
+  // marineData   Marine?
+  updatedAt    DateTime @updatedAt
+  createdAt    DateTime @default(now())
 }
+
 
 // Operations Module
 model Operation {
