@@ -1,0 +1,115 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// Accounting Module
+model Accounting {
+  id           Int       @id @default(autoincrement())
+  transaction  String    @db.VarChar(255)
+  amount       Float
+  transactionDate DateTime @default(now())
+  description  String?   @db.Text
+  createdAt    DateTime  @default(now())
+}
+
+// Chart of Accounts
+model ChartOfAccounts {
+  id          Int      @id @default(autoincrement())
+  code        String   @unique @db.VarChar(50) // Kode akun, misal 101, 201
+  name        String   @db.VarChar(255) // Nama akun, misal "Cash", "Accounts Payable"
+  type        String   @db.VarChar(50) // Assets, Liabilities, Equity, Revenue, Expenses
+  createdAt   DateTime @default(now())
+
+  JournalEntry JournalEntry[]
+}
+
+// Journal Entry
+model JournalEntry {
+  id          Int      @id @default(autoincrement())
+  transactionDate DateTime @default(now())
+  description  String   @db.Text
+  debit        Float    @default(0.0)
+  credit       Float    @default(0.0)
+  accountId    Int
+  account      ChartOfAccounts @relation(fields: [accountId], references: [id])
+}
+
+// Procurement Module
+model Procurement {
+  id           Int       @id @default(autoincrement())
+  itemName     String    @db.VarChar(255)
+  quantity     Int
+  supplier     String    @db.VarChar(255)
+  cost         Float
+  orderDate    DateTime  @default(now())
+  deliveryDate DateTime?
+  createdAt    DateTime  @default(now())
+}
+
+// Crew Module
+model Crew {
+  id           Int       @id @default(autoincrement())
+  name         String    @db.VarChar(255)
+  role         String
+  shiftStart   DateTime
+  shiftEnd     DateTime
+  status       String    @default("active")
+  createdAt    DateTime  @default(now())
+}
+
+// Marine Module
+model Marine {
+  id           Int       @id @default(autoincrement())
+  vesselId     Int       @unique
+  location     String    @db.VarChar(255)
+  status       String    @default("operational")
+  lastUpdated  DateTime  @default(now())
+  createdAt    DateTime  @default(now())
+
+  Vessel       Vessel    @relation(fields: [vesselId], references: [id])
+}
+
+// Vessel Module
+model Vessel {
+  id           Int       @id @default(autoincrement())
+  name         String    @db.VarChar(255)
+  type         String
+  capacity     Int
+  operationalStatus String @default("active")
+  marineData   Marine?
+  createdAt    DateTime  @default(now())
+}
+
+// Operations Module
+model Operation {
+  id           Int       @id @default(autoincrement())
+  activityName String    @db.VarChar(255)
+  startDate    DateTime
+  endDate      DateTime
+  status       String    @default("pending")
+  createdAt    DateTime  @default(now())
+}
+
+// Marketing Module
+model Marketing {
+  id           Int       @id @default(autoincrement())
+  campaignName String    @db.VarChar(255)
+  target       String    @db.VarChar(255)
+  budget       Float
+  startDate    DateTime
+  endDate      DateTime
+  status       String    @default("ongoing")
+  createdAt    DateTime  @default(now())
+}
+
