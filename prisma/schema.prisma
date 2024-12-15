@@ -21,6 +21,8 @@ model Accounting {
   transactionDate DateTime @default(now())
   description  String?   @db.Text
   createdAt    DateTime  @default(now())
+
+  @@map("accounting")
 }
 
 // Chart of Accounts
@@ -30,6 +32,8 @@ model ChartOfAccounts {
   name        String   @db.VarChar(255) // Nama akun, misal "Cash", "Accounts Payable"
   type        String   @db.VarChar(50) // Assets, Liabilities, Equity, Revenue, Expenses
   createdAt   DateTime @default(now())
+
+  @@map("chart_of_accounts")
 
   JournalEntry JournalEntry[]
 }
@@ -43,6 +47,8 @@ model JournalEntry {
   credit       Float    @default(0.0)
   accountId    Int
   account      ChartOfAccounts @relation(fields: [accountId], references: [id])
+
+  @@map("journal_entry")
 }
 
 // Procurement Module
@@ -55,6 +61,8 @@ model Procurement {
   orderDate    DateTime  @default(now())
   deliveryDate DateTime?
   createdAt    DateTime  @default(now())
+
+  @@map("procurement")
 }
 
 // Crew Module
@@ -66,6 +74,8 @@ model Crew {
   shiftEnd     DateTime
   status       String    @default("active")
   createdAt    DateTime  @default(now())
+
+  @@map("crew")
 }
 
 // Marine Module
@@ -78,6 +88,8 @@ model Marine {
   createdAt    DateTime  @default(now())
 
   // Vessel       Vessel    @relation(fields: [vesselId], references: [id])
+
+  @@map("marine")
 }
 
 // Vessel Module
@@ -91,6 +103,8 @@ model Vessel {
   // marineData   Marine?
   updatedAt    DateTime @updatedAt
   createdAt    DateTime @default(now())
+
+  @@map("vessel")
 }
 
 
@@ -102,6 +116,8 @@ model Operation {
   endDate      DateTime
   status       String    @default("pending")
   createdAt    DateTime  @default(now())
+
+  @@map("operation")
 }
 
 // Marketing Module
@@ -114,5 +130,7 @@ model Marketing {
   endDate      DateTime
   status       String    @default("ongoing")
   createdAt    DateTime  @default(now())
+
+  @@map("marketing")
 }
 
